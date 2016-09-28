@@ -103,7 +103,7 @@ var Book = React.createClass({
   }
 });
 
-//Component ------------------------------------- CommentForm
+//Component ------------------------------------- BookForm
 var BookForm = React.createClass({
   getInitialState: function() {
     return {author: '', text: ''};
@@ -147,6 +147,6 @@ var BookForm = React.createClass({
 });
 
 ReactDOM.render(
-  <BookLibrary url="/serverdata" pollInterval={3000} />,
+  <BookLibrary url="/serverdata" />,
   document.getElementById('content')
 );
