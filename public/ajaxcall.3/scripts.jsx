@@ -1,7 +1,67 @@
+//var $ = require ('jquery');
 //Component ------------------------------------- BookLibrary
+/*
+class BookLibrary extends React.Component{
+  constructor(props) {
+    super(props);
+    this.props = props;
+    this.state = {
+        data: [{id: "0", author: "Authorname", text: "Book"}]
+    };
+  }
+
+  loadBooksFromServer() {
+    console.log("loadBooksFromServer");
+    $.ajax({
+      url: this.props.url,
+      dataType: 'json',
+      cache: false,
+      success: function(data) {
+        this.setState({data: data});
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error(this.props.url, status, err.toString());
+      }.bind(this)
+    });
+  }
+
+  handleBookSubmit(bookData) {
+    console.log("handleBookSubmit : " + JSON.stringify(bookData));
+    $.ajax({
+      url: this.props.url,
+      dataType: 'json',
+      type: 'POST',
+      data: bookData,
+      success: function(data) {
+        this.setState({data: data});
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error(this.props.url, status, err.toString());
+      }.bind(this)
+    })
+  }
+  
+
+  componentDidMount() {
+    console.log("executing BookLibrary:componentDidMount");
+    this.loadBooksFromServer();
+    //setInterval(this.loadBooksFromServer.bind(this), 1000);
+  }
+
+  render() {
+    console.log("BookLibrary:render");
+    return (
+      <div>
+        <BookList data={this.state.data}/>
+
+        <BookForm onBookSubmit={this.handleBookSubmit} />
+      </div>
+    );
+  }
+}//class BookLibrary
+*/
 var BookLibrary = React.createClass({
   loadBooksFromServer: function() {
-
     $.ajax({
       url: this.props.url,
       dataType: 'json',
@@ -35,10 +95,12 @@ var BookLibrary = React.createClass({
     console.log("executing BookLibrary:getInitialState");
     return {data: [{id: "0", author: "Authorname", text: "Book"}]};
   },
+
   componentDidMount: function() {
     console.log("executing BookLibrary:componentDidMount");
     this.loadBooksFromServer();
   },
+
   render: function() {
     console.log("BookLibrary:render");
     return (
@@ -48,13 +110,19 @@ var BookLibrary = React.createClass({
         <BookForm onBookSubmit={this.handleBookSubmit} />
       </div>
     );
-  }
-});
+  }//render
+}); //BookLibrary
 
 
 // Component ------------------------------------- BookList
-var BookList = React.createClass({
-  render: function() {
+class BookList extends React.Component{
+
+  constructor(props) {
+    super(props);
+    this.props = props;
+  }
+
+  render() {
     /*
     this.props.data has an object array.
     We need to iterate thought easch element of the array and create a <Book > tag for each object.
@@ -86,12 +154,16 @@ var BookList = React.createClass({
       </div>
     );
   }
-});
+}//class BookList
 
 // Component ------------------------------------- Book
-var Book = React.createClass({
+class Book extends React.Component{
+  constructor(props) {
+    super(props);
+    this.props = props;
+  }
 
-  render: function() {
+  render() {
     return (
       <tbody>
       <tr>
@@ -101,50 +173,51 @@ var Book = React.createClass({
       </tbody>
     );
   }
-});
+}//class Book
 
 //Component ------------------------------------- BookForm
-var BookForm = React.createClass({
-  getInitialState: function() {
-    return {author: '', text: ''};
-  },
-  handleAuthorChange: function(e) {
-    this.setState({author: e.target.value});
-  },
-  handleTextChange: function(e) {
-    this.setState({text: e.target.value});
-  },
-  handleSubmit: function(e) {
+class BookForm extends React.Component{
+  constructor(props) {
+    super(props);
+    this.props = props;
+    this.state = {author: '', text: ''};
+  }
+
+  handleAuthorChange(e) {
+    this.state.author = e.target.value;
+  }
+
+  handleTextChange(e) {
+    this.state.text = e.target.value;
+  }
+//this.props.onCommentSubmit({author: author, text: text});
+  handleSubmit(e) {
     e.preventDefault();
-    var author = this.state.author.trim();
-    var text = this.state.text.trim();
+    var author = ReactDOM.findDOMNode(this.refs.author).value.trim();
+    var text = ReactDOM.findDOMNode(this.refs.text).value.trim();
     if (!text || !author) {
       return;
     }
     this.props.onBookSubmit({author: author, text: text});
-    this.setState({author: '', text: ''});
-  },
-  render: function() {
+    
+    ReactDOM.findDOMNode(this.refs.author).value = '';
+    ReactDOM.findDOMNode(this.refs.text).value = '';
+    return;
+  }
+
+  render() {
     return (
-      <form className="well" onSubmit={this.handleSubmit}>
+      <form className="well" onSubmit={this.handleSubmit.bind(this)}>
         <h4>Add a book to library</h4>
-        <input
-          type="text" className="form-control"
-          placeholder="Author"
-          value={this.state.author}
-          onChange={this.handleAuthorChange}
-        />
-        <input
-          type="text" className="form-control"
-          placeholder="Book name"
-          value={this.state.text}
-          onChange={this.handleTextChange}
-        />
+        <input type="text" className="form-control"
+          placeholder="Author" ref="author" />
+        <input type="text" className="form-control"
+          placeholder="Book name" ref="text" />
       <input type="submit" value="Add" className="form-control btn btn-warning"/>
       </form>
     );
   }
-});
+} // class BookForm
 
 ReactDOM.render(
   <BookLibrary url="/serverdata" />,
