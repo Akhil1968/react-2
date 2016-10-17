@@ -1,6 +1,9 @@
-//var $ = require ('jquery');
+
 //Component ------------------------------------- BookLibrary
-/*
+// courtsey -> http://www.tamas.io/react-with-es6/
+// React Components when written using ES6 syntax, require .bind(this) to be written in the render method as shown below-
+//  <BookForm onBookSubmit={this.handleBookSubmit.bind(this)} />  
+
 class BookLibrary extends React.Component{
   constructor(props) {
     super(props);
@@ -17,11 +20,11 @@ class BookLibrary extends React.Component{
       dataType: 'json',
       cache: false,
       success: function(data) {
-        this.setState({data: data});
-      }.bind(this),
+                this.setState({data: data});
+              }.bind(this),
       error: function(xhr, status, err) {
-        console.error(this.props.url, status, err.toString());
-      }.bind(this)
+                console.error(this.props.url, status, err.toString());
+              }.bind(this)
     });
   }
 
@@ -33,11 +36,11 @@ class BookLibrary extends React.Component{
       type: 'POST',
       data: bookData,
       success: function(data) {
-        this.setState({data: data});
-      }.bind(this),
+                this.setState({data: data});
+              }.bind(this),
       error: function(xhr, status, err) {
-        console.error(this.props.url, status, err.toString());
-      }.bind(this)
+                console.error(this.props.url, status, err.toString());
+              }.bind(this)
     })
   }
   
@@ -45,7 +48,6 @@ class BookLibrary extends React.Component{
   componentDidMount() {
     console.log("executing BookLibrary:componentDidMount");
     this.loadBooksFromServer();
-    //setInterval(this.loadBooksFromServer.bind(this), 1000);
   }
 
   render() {
@@ -53,65 +55,12 @@ class BookLibrary extends React.Component{
     return (
       <div>
         <BookList data={this.state.data}/>
-
-        <BookForm onBookSubmit={this.handleBookSubmit} />
+        
+        <BookForm onBookSubmit={this.handleBookSubmit.bind(this)} /> 
       </div>
     );
   }
 }//class BookLibrary
-*/
-var BookLibrary = React.createClass({
-  loadBooksFromServer: function() {
-    $.ajax({
-      url: this.props.url,
-      dataType: 'json',
-      cache: false,
-      success: function(data) {
-        this.setState({data: data});
-      }.bind(this),
-      error: function(xhr, status, err) {
-        console.error(this.props.url, status, err.toString());
-      }.bind(this)
-    });
-  },
-
-
-  handleBookSubmit: function(bookData) {
-    $.ajax({
-      url: this.props.url,
-      dataType: 'json',
-      type: 'POST',
-      data: bookData,
-      success: function(data) {
-        this.setState({data: data});
-      }.bind(this),
-      error: function(xhr, status, err) {
-        console.error(this.props.url, status, err.toString());
-      }.bind(this)
-    });
-  },
-
-  getInitialState: function() {
-    console.log("executing BookLibrary:getInitialState");
-    return {data: [{id: "0", author: "Authorname", text: "Book"}]};
-  },
-
-  componentDidMount: function() {
-    console.log("executing BookLibrary:componentDidMount");
-    this.loadBooksFromServer();
-  },
-
-  render: function() {
-    console.log("BookLibrary:render");
-    return (
-      <div>
-        <BookList data={this.state.data}/>
-
-        <BookForm onBookSubmit={this.handleBookSubmit} />
-      </div>
-    );
-  }//render
-}); //BookLibrary
 
 
 // Component ------------------------------------- BookList
